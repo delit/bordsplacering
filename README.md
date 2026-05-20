@@ -8,6 +8,21 @@ Webbapp för att planera bordsplacering vid middagar och evenemang — importera
 
 **App:** [https://delit.github.io/bordsplacering/](https://delit.github.io/bordsplacering/)
 
+<p align="center">
+  <table>
+    <tr>
+      <td><img src="img/2026_05_20_1705.png" alt="Bordsplacering – översikt" width="280"></td>
+      <td><img src="img/2026_05_20_1706.png" alt="Bordsplacering – gästlista" width="280"></td>
+      <td><img src="img/2026_05_20_1709.png" alt="Bordsplacering – bordsform" width="280"></td>
+    </tr>
+    <tr>
+      <td><img src="img/2026_05_20_1710.png" alt="Bordsplacering – placering" width="280"></td>
+      <td><img src="img/2026_05_20_1711.png" alt="Bordsplacering – manuellt läge" width="280"></td>
+      <td><img src="img/2026_05_20_1712.png" alt="Bordsplacering – export" width="280"></td>
+    </tr>
+  </table>
+</p>
+
 ## Funktioner
 
 - Importera gästlista från CSV (semikolon-separerad)
@@ -17,12 +32,6 @@ Webbapp för att planera bordsplacering vid middagar och evenemang — importera
 - Fält för specialkost och övrigt (med ikoner i gränssnittet)
 - Exportera placering till Word
 - Autospar i webbläsaren (localStorage)
-
-## Kom igång
-
-Öppna appen: [https://delit.github.io/bordsplacering/](https://delit.github.io/bordsplacering/)
-
-Alternativt: klona repot och öppna `index.html` lokalt.
 
 ## CSV-format
 
@@ -49,6 +58,7 @@ Exempelfil: [`exempel_gaster.csv`](exempel_gaster.csv)
 | `bordsplacering.js` | Logik |
 | `exempel_gaster.csv` | Exempelgäster |
 | `favicons/` | Ikoner (16–512 px, SVG, ICO, manifest) |
+| `img/` | Skärmdumpar till README |
 
 ## Licens
 
