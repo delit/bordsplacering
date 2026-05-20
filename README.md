@@ -8,20 +8,18 @@ Webbapp för att planera bordsplacering vid middagar och evenemang — importera
 
 **App:** [https://delit.github.io/bordsplacering/](https://delit.github.io/bordsplacering/)
 
-<p align="center">
-  <table>
-    <tr>
-      <td><img src="img/2026_05_20_1705.png" alt="Bordsplacering – översikt" width="400"></td>
-      <td><img src="img/2026_05_20_1706.png" alt="Bordsplacering – gästlista" width="400"></td>
-    </tr>
-    <tr>
-      <td><img src="img/2026_05_20_1709.png" alt="Bordsplacering – bordsform" width="280"></td>
-      <td><img src="img/2026_05_20_1710.png" alt="Bordsplacering – placering" width="280"></td>
-      <td><img src="img/2026_05_20_1711.png" alt="Bordsplacering – manuellt läge" width="280"></td>
-      <td><img src="img/2026_05_20_1712.png" alt="Bordsplacering – export" width="280"></td>
-    </tr>
-  </table>
-</p>
+<table width="100%" cellpadding="6" cellspacing="0">
+  <tr>
+    <td width="50%" valign="top"><img src="img/2026_05_20_1705.png" alt="Bordsplacering – översikt" style="width:100%;display:block;border-radius:8px"></td>
+    <td width="50%" valign="top"><img src="img/2026_05_20_1706.png" alt="Bordsplacering – gästlista" style="width:100%;display:block;border-radius:8px"></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><img src="img/2026_05_20_1709.png" alt="Bordsplacering – bordsform" style="width:100%;height:200px;object-fit:cover;object-position:top;display:block;border-radius:8px"></td>
+    <td width="25%" valign="top"><img src="img/2026_05_20_1710.png" alt="Bordsplacering – placering" style="width:100%;height:200px;object-fit:cover;object-position:top;display:block;border-radius:8px"></td>
+    <td width="25%" valign="top"><img src="img/2026_05_20_1711.png" alt="Bordsplacering – manuellt läge" style="width:100%;height:200px;object-fit:cover;object-position:top;display:block;border-radius:8px"></td>
+    <td width="25%" valign="top"><img src="img/2026_05_20_1712.png" alt="Bordsplacering – export" style="width:100%;height:200px;object-fit:cover;object-position:top;display:block;border-radius:8px"></td>
+  </tr>
+</table>
 
 ## Funktioner
 
