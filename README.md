@@ -22,7 +22,7 @@ Webbapp för att planera bordsplacering vid middagar och evenemang — importera
 
 Öppna appen: [https://delit.github.io/bordsplacering/](https://delit.github.io/bordsplacering/)
 
-Alternativt: klona repot och öppna `bordsplacering.html` lokalt.
+Alternativt: klona repot och öppna `index.html` lokalt.
 
 ## CSV-format
 
@@ -44,7 +44,7 @@ Exempelfil: [`exempel_gaster.csv`](exempel_gaster.csv)
 
 | Fil | Innehåll |
 |-----|----------|
-| `bordsplacering.html` | Huvudsida |
+| `index.html` | Huvudsida |
 | `bordsplacering.css` | Stilar |
 | `bordsplacering.js` | Logik |
 | `exempel_gaster.csv` | Exempelgäster |
