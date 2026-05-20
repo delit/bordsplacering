@@ -3,6 +3,7 @@
 ══════════════════════════════════════ */
 let state={guests:[],tables:[],eventName:'',seatsPerTable:10,tableShape:'rect',tableCounter:0,mode:'result'};
 let undoStack=[],activeFilter='all',activeAgeFilter='all',manualGuestFilter='all',manualAgeFilter='all';
+let _tableDragId=null; /* Chrome/Edge: getData() är tom under dragover */
 const SK='bordsplacering_v8';
 const AGE_BRACKETS=[
   {id:'0-5',label:'0–5',min:0,max:5},
@@ -551,7 +552,7 @@ function renderCard(t){
         <button class="ghost small" data-action="remove-seat" data-table-id="${t.id}">− plats</button>
         <button class="ghost-danger small" data-action="remove-table" data-table-id="${t.id}">Ta bort</button>
       </div>
-      <div class="table-drag-handle" draggable="true" data-table-drag="${t.id}" role="img" aria-label="Dra för att byta bord" title="Dra för att byta position med annat bord"><svg class="table-drag-grip" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="4.5" r="1.25" fill="none" stroke="currentColor"/><circle cx="6" cy="10" r="1.25" fill="none" stroke="currentColor"/><circle cx="6" cy="15.5" r="1.25" fill="none" stroke="currentColor"/><circle cx="14" cy="4.5" r="1.25" fill="none" stroke="currentColor"/><circle cx="14" cy="10" r="1.25" fill="none" stroke="currentColor"/><circle cx="14" cy="15.5" r="1.25" fill="none" stroke="currentColor"/></svg></div>
+      <div class="table-drag-handle" draggable="true" data-table-drag="${t.id}" role="img" aria-label="Dra för att byta bord" title="Dra för att byta position med annat bord"><svg class="table-drag-grip" draggable="false" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="4.5" r="1.25" fill="none" stroke="currentColor"/><circle cx="6" cy="10" r="1.25" fill="none" stroke="currentColor"/><circle cx="6" cy="15.5" r="1.25" fill="none" stroke="currentColor"/><circle cx="14" cy="4.5" r="1.25" fill="none" stroke="currentColor"/><circle cx="14" cy="10" r="1.25" fill="none" stroke="currentColor"/><circle cx="14" cy="15.5" r="1.25" fill="none" stroke="currentColor"/></svg></div>
     </div>
   </div>`;
 }
@@ -630,6 +631,48 @@ function seatHtml(gid,tableId,idx,isAbs,style,barPos){
 /* ══════════════════════════════════════
    DRAG HANDLERS (result + manual)
 ══════════════════════════════════════ */
+function wireTableSwap(root){
+  root.querySelectorAll('[data-table-drag]').forEach(handle=>{
+    handle.addEventListener('dragstart',e=>{
+      e.stopPropagation();
+      const tid=handle.dataset.tableDrag;
+      _tableDragId=tid;
+      e.dataTransfer.effectAllowed='move';
+      const p=JSON.stringify({type:'table-swap',tableId:tid});
+      e.dataTransfer.setData('text/plain',p);
+      e.dataTransfer.setData('application/tableswap',p);
+      handle.closest('.table-card')?.classList.add('table-dragging-source');
+    });
+    handle.addEventListener('dragend',()=>{
+      _tableDragId=null;
+      root.querySelectorAll('.table-dragging-source,.table-drag-over').forEach(x=>x.classList.remove('table-dragging-source','table-drag-over'));
+    });
+  });
+  root.querySelectorAll('.table-card').forEach(card=>{
+    card.addEventListener('dragenter',e=>{
+      if(_tableDragId&&_tableDragId!==card.dataset.tableId){e.preventDefault();e.stopPropagation();}
+    });
+    card.addEventListener('dragover',e=>{
+      if(_tableDragId&&_tableDragId!==card.dataset.tableId){
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect='move';
+        card.classList.add('table-drag-over');
+      }
+    });
+    card.addEventListener('dragleave',e=>{if(!card.contains(e.relatedTarget))card.classList.remove('table-drag-over');});
+    card.addEventListener('drop',e=>{
+      card.classList.remove('table-drag-over');
+      const src=_tableDragId;
+      if(src&&src!==card.dataset.tableId){
+        e.preventDefault();
+        e.stopPropagation();
+        swapTables(src,card.dataset.tableId);
+      }
+      _tableDragId=null;
+    });
+  });
+}
 function parseSeatDropPayload(e){
   let d=null;try{
     d=JSON.parse(
@@ -719,29 +762,7 @@ function attachHandlers(){
       else if(a==='remove-table'){if(!confirm(`Ta bort Bord ${state.tables.find(x=>x.id===tid)?.number}? Gästerna blir oplacerade.`))return;removeTable(tid);}
     });
   });
-  root.querySelectorAll('[data-table-drag]').forEach(handle=>{
-    handle.addEventListener('dragstart',e=>{
-      e.stopPropagation();
-      const tid=handle.dataset.tableDrag;
-      e.dataTransfer.effectAllowed='move';
-      const p=JSON.stringify({type:'table-swap',tableId:tid});
-      e.dataTransfer.setData('text/plain',p);e.dataTransfer.setData('application/tableswap',p);
-      handle.closest('.table-card').classList.add('table-dragging-source');
-    });
-    handle.addEventListener('dragend',()=>{root.querySelectorAll('.table-dragging-source,.table-drag-over').forEach(x=>x.classList.remove('table-dragging-source','table-drag-over'));});
-  });
-  root.querySelectorAll('.table-card').forEach(card=>{
-    card.addEventListener('dragover',e=>{
-      let d0=null;try{d0=JSON.parse(e.dataTransfer.getData('application/tableswap')||e.dataTransfer.getData('text/plain'));}catch{}
-      if(d0&&d0.type==='table-swap'&&d0.tableId!==card.dataset.tableId){e.preventDefault();e.stopPropagation();card.classList.add('table-drag-over');}
-    });
-    card.addEventListener('dragleave',e=>{if(!card.contains(e.relatedTarget))card.classList.remove('table-drag-over');});
-    card.addEventListener('drop',e=>{
-      card.classList.remove('table-drag-over');
-      let d0=null;try{d0=JSON.parse(e.dataTransfer.getData('application/tableswap')||e.dataTransfer.getData('text/plain'));}catch{}
-      if(d0&&d0.type==='table-swap'){e.preventDefault();e.stopPropagation();swapTables(d0.tableId,card.dataset.tableId);}
-    });
-  });
+  wireTableSwap(root);
 }
 function attachManualBoardHandlers(){
   const board=document.getElementById('boardPanel');
@@ -776,29 +797,7 @@ function attachManualBoardHandlers(){
       else if(a==='remove-table'){if(!confirm(`Ta bort Bord ${state.tables.find(x=>x.id===tid)?.number}? Gästerna blir oplacerade.`))return;removeTable(tid);}
     });
   });
-  board.querySelectorAll('[data-table-drag]').forEach(handle=>{
-    handle.addEventListener('dragstart',e=>{
-      e.stopPropagation();
-      const tid=handle.dataset.tableDrag;
-      e.dataTransfer.effectAllowed='move';
-      const p=JSON.stringify({type:'table-swap',tableId:tid});
-      e.dataTransfer.setData('text/plain',p);e.dataTransfer.setData('application/tableswap',p);
-      handle.closest('.table-card').classList.add('table-dragging-source');
-    });
-    handle.addEventListener('dragend',()=>{board.querySelectorAll('.table-dragging-source,.table-drag-over').forEach(x=>x.classList.remove('table-dragging-source','table-drag-over'));});
-  });
-  board.querySelectorAll('.table-card').forEach(card=>{
-    card.addEventListener('dragover',e=>{
-      let d0=null;try{d0=JSON.parse(e.dataTransfer.getData('application/tableswap')||e.dataTransfer.getData('text/plain'));}catch{}
-      if(d0&&d0.type==='table-swap'&&d0.tableId!==card.dataset.tableId){e.preventDefault();e.stopPropagation();card.classList.add('table-drag-over');}
-    });
-    card.addEventListener('dragleave',e=>{if(!card.contains(e.relatedTarget))card.classList.remove('table-drag-over');});
-    card.addEventListener('drop',e=>{
-      card.classList.remove('table-drag-over');
-      let d0=null;try{d0=JSON.parse(e.dataTransfer.getData('application/tableswap')||e.dataTransfer.getData('text/plain'));}catch{}
-      if(d0&&d0.type==='table-swap'){e.preventDefault();e.stopPropagation();swapTables(d0.tableId,card.dataset.tableId);}
-    });
-  });
+  wireTableSwap(board);
 }
 function swapTables(idA,idB){
   if(idA===idB)return;pushUndo('Byta bord');

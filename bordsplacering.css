@@ -180,7 +180,8 @@ input:focus,select:focus{border-color:var(--accent);}
 .table-drag-handle{width:28px;height:28px;border-radius:6px;background:transparent;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--ink-faint);transition:background .12s,color .12s,border-color .12s;user-select:none;flex-shrink:0;}
 .table-drag-handle:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-dark);}
 .table-drag-handle:active{cursor:grabbing;}
-.table-drag-grip{display:block;pointer-events:none;}
+.table-drag-grip{display:block;pointer-events:none;-webkit-user-drag:none;user-drag:none;}
+.table-drag-handle[draggable="true"]{-webkit-user-drag:element;}
 
 /* ── Run bord: kvadrat så cirkel blir sann i pixlar (elips gav sämre avstånd) ── */
 .table-visual-round{
