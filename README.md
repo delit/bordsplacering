@@ -6,7 +6,7 @@
 
 Webbapp för att planera bordsplacering vid middagar och evenemang — importera gäster från CSV, skapa bord och placera automatiskt eller manuellt.
 
-**Repository:** [https://github.com/delit/bordsplacering](https://github.com/delit/bordsplacering)
+**App:** [https://delit.github.io/bordsplacering/](https://delit.github.io/bordsplacering/)
 
 ## Funktioner
 
@@ -15,15 +15,14 @@ Webbapp för att planera bordsplacering vid middagar och evenemang — importera
 - Skapa bord (avlångt eller runt), auto-placering eller manuellt läge
 - Filtrera på kön och ålder
 - Fält för specialkost och övrigt (med ikoner i gränssnittet)
-- Exportera placering till Word (.docx)
-- Spara i webbläsaren (localStorage)
+- Exportera placering till Word
+- Autospar i webbläsaren (localStorage)
 
 ## Kom igång
 
-1. Klona repot eller ladda ned filerna
-2. Öppna `bordsplacering.html` i en modern webbläsare
+Öppna appen: [https://delit.github.io/bordsplacering/](https://delit.github.io/bordsplacering/)
 
-Ingen server krävs för grundfunktionen. För exempel-CSV via nätverk kan du köra en enkel lokal server, t.ex. `npx serve .`
+Alternativt: klona repot och öppna `bordsplacering.html` lokalt.
 
 ## CSV-format
 

@@ -427,7 +427,7 @@ function showSetup(){
   document.getElementById('resultView').style.display='none';
   document.getElementById('manualView').style.display='none';
   document.getElementById('bottomToolbar').classList.remove('visible');
-  ['btnHome','btnSave','btnExport','btnUndo'].forEach(id=>document.getElementById(id).style.display='none');
+  ['btnHome','btnExport','btnUndo'].forEach(id=>document.getElementById(id).style.display='none');
   document.querySelector('main').style.padding='';
   document.querySelector('header').style.display='none';
   const mPl=document.getElementById('manualPlacement');
@@ -447,7 +447,7 @@ function renderResult(){
   document.getElementById('resultView').style.display='';
   document.getElementById('manualView').style.display='none';
   document.getElementById('bottomToolbar').classList.add('visible');
-  ['btnHome','btnSave','btnExport','btnUndo'].forEach(id=>document.getElementById(id).style.display='');
+  ['btnHome','btnExport','btnUndo'].forEach(id=>document.getElementById(id).style.display='');
   document.querySelector('main').style.padding='';
   document.querySelector('header').style.display='';
   renderStats();renderFilterBar();renderUnplaced();renderTables();
@@ -821,7 +821,7 @@ function renderManualView(){
   document.getElementById('resultView').style.display='none';
   document.getElementById('manualView').style.display='block';
   document.getElementById('bottomToolbar').classList.remove('visible');
-  ['btnHome','btnSave','btnExport','btnUndo'].forEach(id=>document.getElementById(id).style.display='none');
+  ['btnHome','btnExport','btnUndo'].forEach(id=>document.getElementById(id).style.display='none');
   document.querySelector('header').style.display='none';
   document.querySelector('main').style.padding='0';
   renderNameList();
@@ -1270,7 +1270,7 @@ async function exportWord(){
     word.file('afchunk.htm',html);
     const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     downloadBlob(blob,filename);
-    showToast('Word-fil (.docx) exporterad');
+    showToast('Word-fil exporterad');
   }catch{
     exportWordLegacyDoc(html,date);
   }
@@ -1304,9 +1304,9 @@ function syncPlacementToggles(){
     if(mL)mL.classList.remove('muted');if(aL)aL.classList.remove('muted');
   }
 }
-/** Hem: rensa localStorage + in-memory, återställ gästfil-UI. Spara före Hem om du vill spara. */
+/** Hem: rensa localStorage + in-memory, återställ gästfil-UI. */
 function goToStartScreenFromApp(){
-  if(!confirm('Gå till startsidan? Allt i webbläsaren rensas: uppladdad gästlista, bord och placeringsdata. Exportera till Word (.docx) först om du vill spara en kopia på datorn.'))return;
+  if(!confirm('Gå till startsidan? Allt i webbläsaren rensas: uppladdad gästlista, bord och placeringsdata. Exportera till Word först om du vill spara en kopia på datorn.'))return;
   state.guests=[];state.tables=[];state.eventName='';
   state.seatsPerTable=10;state.tableShape='rect';state.tableCounter=0;state.mode='result';
   manualGuestFilter='all';manualAgeFilter='all';activeFilter='all';activeAgeFilter='all';
@@ -1405,7 +1405,6 @@ function handleFile(f){
 }
 function wireHeader(){
   document.getElementById('btnHome').addEventListener('click',()=>{goToStartScreenFromApp();});
-  document.getElementById('btnSave').addEventListener('click',()=>{persist();showToast('Sparad');});
   document.getElementById('btnExport').addEventListener('click',exportWord);
   document.getElementById('btnUndo').addEventListener('click',doUndo);
   document.getElementById('btnAddTable').addEventListener('click',addNewTable);
@@ -1430,7 +1429,6 @@ function wireHeader(){
   });
   // Manual view internal buttons
   document.getElementById('btnHomeManual').addEventListener('click',()=>{goToStartScreenFromApp();});
-  document.getElementById('btnSaveManual').addEventListener('click',()=>{persist();showToast('Sparad');});
   document.getElementById('btnDoneManual').addEventListener('click',()=>{
     persist();renderResult();
   });

@@ -172,7 +172,7 @@ input:focus,select:focus{border-color:var(--accent);}
 
 .table-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;padding-bottom:8px;border-bottom:1px solid var(--line-soft);gap:6px;}
 .table-head-left{display:flex;align-items:center;gap:8px;}
-.table-num{font-family:var(--serif);font-size:20px;font-weight:400;letter-spacing:-.01em;font-variation-settings:"opsz" 144;line-height:1;}
+.table-num{font-family:var(--serif);font-size:24px;font-weight:400;letter-spacing:-.01em;font-variation-settings:"opsz" 144;line-height:1;}
 .table-num em{font-style:italic;color:var(--accent);font-weight:300;margin-right:4px;}
 .table-meta{font-size:11px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
 .btn-table-info{width:19px;height:19px;border-radius:50%;background:transparent;border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:var(--ink-faint);font-family:var(--serif);font-style:italic;font-weight:600;flex-shrink:0;padding:0;line-height:1;transition:border-color .12s,color .12s;}
