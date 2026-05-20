@@ -1,0 +1,5 @@
+favicons/node_modules/
+favicons/package-lock.json
+.DS_Store
+Thumbs.db
+*.doc

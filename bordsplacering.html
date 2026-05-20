@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bordsplacering</title>
+<link rel="icon" href="favicons/favicon.ico" sizes="48x48">
+<link rel="icon" href="favicons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicons/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicons/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="favicons/apple-touch-icon.png">
+<link rel="manifest" href="favicons/site.webmanifest">
+<meta name="theme-color" content="#b8874d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bordsplacering.css">
+
+</head>
+<body>
+
+<header>
+  <div class="brand"><h1>Bords<em>placering</em></h1></div>
+  <div class="header-actions" id="headerActions">
+    <button class="ghost" id="btnHome" type="button" style="display:none" aria-label="Hem">⌂ Hem</button>
+    <button class="ghost" id="btnUndo" style="display:none">↩ Ångra</button>
+    <button class="ghost" id="btnSave" style="display:none">Spara</button>
+    <button class="primary" id="btnExport" style="display:none">Exportera Word (.docx)</button>
+  </div>
+</header>
+
+<main>
+<!-- ══ SETUP ══ -->
+<section id="setupView" class="setup">
+  <div class="setup-logo"><h2>Bords<em>placering</em></h2></div>
+
+  <!-- Card 1: Guest list -->
+  <div class="card">
+    <div class="card-label-row">
+      <div class="card-label" style="margin-bottom:0"><span class="num">1</span> Gästlista</div>
+      <div class="info-trigger">
+        <div class="info-icon" tabindex="0">i</div>
+        <div class="info-popover">
+          <strong style="display:block;margin-bottom:6px">CSV-format</strong>
+          Filen ska vara semikolon-separerad med dessa kolumner:<br>
+          <code>Namn;Kön;Född;Specialkost;Övrigt</code><br><br>
+          <strong>Kön:</strong> Man, Kvinna eller Annat<br>
+          <strong>Född:</strong> födelseår, t.ex. 1978<br>
+          <strong>Specialkost:</strong> valfritt, t.ex. glutenfri eller vegetarisk<br>
+          <strong>Övrigt:</strong> valfri fri text
+          <button type="button" class="small ghost info-popover-btn" id="btnLoadExample">Testa exempeldata</button>
+          <button type="button" class="small accent info-popover-btn" id="btnDownloadExample">Ladda ned exempel-CSV</button>
+        </div>
+      </div>
+    </div>
+    <div class="dropzone-wrap" style="margin-top:12px">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon" id="dzIcon">↑</div>
+        <div class="dropzone-text" id="dzText"><strong>Klicka eller dra hit</strong> en CSV-fil</div>
+        <div class="dropzone-sub" id="dzSub">Semikolon-separerad: Namn; Kön; Född; Specialkost; Övrigt</div>
+        <input type="file" id="fileInput" accept=".csv" style="display:none">
+      </div>
+      <p class="setup-skip-hint">Ingen CSV-fil? Du kan ändå skapa bord och lägga in gäster manuellt i nästa steg.</p>
+    </div>
+  </div>
+
+  <!-- Card 2: Tables -->
+  <div class="card">
+    <div class="card-label"><span class="num">2</span> Bord</div>
+    <div class="input-row" style="margin-bottom:18px">
+      <div class="input-group">
+        <label>
+          Antal bord
+          <div class="info-trigger">
+            <div class="info-icon" tabindex="0">i</div>
+            <div class="info-popover left">
+              Ange hur många bord du vill ha. Du kan <strong>lägga till eller ta bort bord</strong> efter att placeringen skapats, via knappen längst ned på sidan. Antal platser per bord kan också justeras per bord individuellt.
+            </div>
+          </div>
+        </label>
+        <input type="number" id="numTables" min="1" max="50" value="10">
+      </div>
+      <div class="input-group">
+        <label>
+          Platser per bord
+          <div class="info-trigger">
+            <div class="info-icon" tabindex="0">i</div>
+            <div class="info-popover left">
+              Standardantal platser per bord. Om gästlistan inte är jämnt delbar hamnar några bord med färre platser — du kan justera detta i efterhand. Bord behöver inte ha exakt samma antal platser.
+            </div>
+          </div>
+        </label>
+        <input type="number" id="seatsPerTable" min="2" max="20" value="10">
+      </div>
+    </div>
+    <div class="card-label" style="margin-bottom:9px">Bordsform</div>
+    <div class="shape-picker">
+      <label class="shape-opt selected" id="shapeRect">
+        <input type="radio" name="tableShape" value="rect" checked>
+        <div class="shape-svg">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <rect x="14" y="5" width="16" height="34" rx="4" stroke="#b8874d" stroke-width="2.5" fill="#f5ede0"/>
+            <circle cx="8"  cy="13" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="8"  cy="22" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="8"  cy="31" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="36" cy="13" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="36" cy="22" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="36" cy="31" r="2.6" fill="#b8874d" opacity=".75"/>
+          </svg>
+        </div>
+        <span class="shape-label">Avlångt bord</span>
+      </label>
+      <label class="shape-opt" id="shapeRound">
+        <input type="radio" name="tableShape" value="round">
+        <div class="shape-svg">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="16" stroke="#b8874d" stroke-width="2.5" fill="#f5ede0"/>
+            <circle cx="22" cy="6"  r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="34.9" cy="12" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="34.9" cy="32" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="22"  cy="38" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="9.1" cy="32" r="2.6" fill="#b8874d" opacity=".75"/>
+            <circle cx="9.1" cy="12" r="2.6" fill="#b8874d" opacity=".75"/>
+          </svg>
+        </div>
+        <span class="shape-label">Runt bord</span>
+      </label>
+    </div>
+  </div>
+
+  <p class="fler-alternativ-wrap">
+    <a href="#morePlacementOptions" class="fler-alternativ-link" id="linkFlerAlternativ" aria-expanded="false" aria-controls="morePlacementOptions">Fler alternativ</a>
+  </p>
+  <div id="morePlacementOptions" class="more-placement-options" hidden>
+    <div class="card" style="padding:16px 20px">
+      <label class="manual-toggle" id="manualToggleLabel">
+        <input type="checkbox" id="manualPlacement">
+        <div class="manual-toggle-text">
+          <strong>Placera gäster manuellt</strong>
+          <span>Dra och släpp namnen på borden själv i nästa steg. Du kan också välja att automatiskt fylla ut alla eller vissa platser.</span>
+        </div>
+      </label>
+    </div>
+    <div class="card" style="padding:16px 20px">
+      <label class="manual-toggle" id="ageOrderToggleLabel">
+        <input type="checkbox" id="ageOrderPlacement">
+        <div class="manual-toggle-text">
+          <strong>Placera gäster efter ålder</strong>
+          <span>De yngsta vid bord 1 (plats 1, 2 …), sedan bord 2, och så vidare efter stigande ålder.</span>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <div class="create-btn-row">
+    <button class="accent" id="btnCreate">Skapa bordsplacering →</button>
+  </div>
+</section>
+
+<!-- ══ RESULT VIEW ══ -->
+<section id="resultView" style="display:none">
+  <div class="stats" id="stats"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-sq m"></div> Man</div>
+    <div class="legend-item"><div class="legend-sq f"></div> Kvinna</div>
+    <div class="legend-item"><div class="legend-sq o"></div> Annat</div>
+    <div class="legend-item"><span class="legend-star">★</span> Specialkost</div>
+    <div class="legend-item"><span class="legend-other-mark">◆</span> Övrigt</div>
+  </div>
+  <div class="filter-bar" id="filterBar">
+    <span class="filter-bar-label">Kön:</span>
+    <button class="small active-filter" data-filter="all">Alla</button>
+    <button class="small ghost" data-filter="Man">Män</button>
+    <button class="small ghost" data-filter="Kvinna">Kvinnor</button>
+  </div>
+  <div class="filter-bar filter-bar--age" id="ageFilterBar">
+    <span class="filter-bar-label">Ålder:</span>
+    <button class="small active-filter" data-age-filter="all">Alla</button>
+    <button class="small ghost" data-age-filter="0-5">0–5</button>
+    <button class="small ghost" data-age-filter="6-12">6–12</button>
+    <button class="small ghost" data-age-filter="13-17">13–17</button>
+    <button class="small ghost" data-age-filter="18-25">18–25</button>
+    <button class="small ghost" data-age-filter="36-45">36–45</button>
+    <button class="small ghost" data-age-filter="46-60">46–60</button>
+    <button class="small ghost" data-age-filter="61-70">61–70</button>
+    <button class="small ghost" data-age-filter="71+">71+</button>
+  </div>
+  <div id="unplacedPanel"></div>
+  <div class="tables-grid" id="tablesGrid"></div>
+  <div class="bottom-toolbar" id="bottomToolbar">
+    <button class="ghost" id="btnAddTable">+ Lägg till bord</button>
+    <button class="ghost" id="btnReshuffle">🎲 Slumpa placering</button>
+  </div>
+</section>
+
+<!-- ══ MANUAL PLACEMENT VIEW ══ -->
+<div id="manualView">
+  <div class="manual-outer">
+    <!-- Mini header inside manual view -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.85);backdrop-filter:blur(8px);flex-shrink:0;gap:12px;">
+      <div style="font-family:var(--serif);font-size:22px;font-weight:400;font-variation-settings:'opsz' 144;">Bords<em style="font-style:italic;color:var(--accent);font-weight:300">placering</em></div>
+      <div style="font-size:13px;color:var(--ink-faint)" id="manualStatus"></div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+        <button class="ghost small" id="btnHomeManual" type="button" aria-label="Hem">⌂ Hem</button>
+        <button class="ghost small" id="btnUndoManual">↩ Ångra</button>
+        <button class="ghost small" id="btnSaveManual">Spara</button>
+        <button class="ghost small" id="btnDoneManual">Klar → Visa placering</button>
+      </div>
+    </div>
+    <div class="manual-toolbar-wrap">
+      <span style="font-size:13px;color:var(--ink-soft);font-weight:500">Auto-placera:</span>
+      <select id="autoGroup">
+        <option value="">Välj grupp...</option>
+        <option value="all">Alla (bästa mix)</option>
+        <option value="Man">Endast män</option>
+        <option value="Kvinna">Endast kvinnor</option>
+        <option value="0-5">Ålder 0–5</option>
+        <option value="6-12">Ålder 6–12</option>
+        <option value="13-17">Ålder 13–17</option>
+        <option value="18-25">Ålder 18–25</option>
+        <option value="36-45">Ålder 36–45</option>
+        <option value="46-60">Ålder 46–60</option>
+        <option value="61-70">Ålder 61–70</option>
+        <option value="71+">Ålder 71+</option>
+      </select>
+      <button class="ghost small" id="btnAutoPlace">Placera ut →</button>
+      <button class="ghost small" id="btnSlumpaManual" type="button">🎲 Slumpa placering</button>
+      <button class="ghost small" id="btnRensaAllaManual" type="button">Rensa alla</button>
+      <div style="flex:1"></div>
+      <span style="font-size:12px;color:var(--ink-faint)" id="manualStatusSub"></span>
+    </div>
+    <div class="manual-layout">
+      <div class="name-panel">
+        <div class="name-panel-head">
+          <div class="name-panel-title-row">
+            <h3>Gäster</h3>
+            <button type="button" class="ghost small" id="btnAddGuest">+ Lägg till gäst</button>
+          </div>
+          <div class="name-panel-sub" id="nameListSub">Dra namnen till borden →</div>
+          <div class="name-panel-filters" id="manualFilterBar" role="group" aria-label="Filtrera kön">
+            <span class="name-filter-label">Kön</span>
+            <button type="button" class="small active-filter" data-manual-filter="all">Alla</button>
+            <button type="button" class="small ghost" data-manual-filter="Man">Män</button>
+            <button type="button" class="small ghost" data-manual-filter="Kvinna">Kvinnor</button>
+          </div>
+          <div class="name-panel-filters name-panel-filters--age" id="manualAgeFilterBar" role="group" aria-label="Filtrera ålder">
+            <span class="name-filter-label">Ålder</span>
+            <button type="button" class="small active-filter" data-manual-age-filter="all">Alla</button>
+            <button type="button" class="small ghost" data-manual-age-filter="0-5">0–5</button>
+            <button type="button" class="small ghost" data-manual-age-filter="6-12">6–12</button>
+            <button type="button" class="small ghost" data-manual-age-filter="13-17">13–17</button>
+            <button type="button" class="small ghost" data-manual-age-filter="18-25">18–25</button>
+            <button type="button" class="small ghost" data-manual-age-filter="36-45">36–45</button>
+            <button type="button" class="small ghost" data-manual-age-filter="46-60">46–60</button>
+            <button type="button" class="small ghost" data-manual-age-filter="61-70">61–70</button>
+            <button type="button" class="small ghost" data-manual-age-filter="71+">71+</button>
+          </div>
+        </div>
+        <div class="name-panel-body" id="nameListBody"></div>
+      </div>
+      <div class="board-panel" id="boardPanel"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+
+
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+<div class="undo-bar" id="undoBar">
+  <span id="undoMsg"></span>
+  <button id="btnUndoAction">Ångra</button>
+  <button id="btnDismissUndo" style="padding:3px 7px;font-size:11px;opacity:.6">✕</button>
+</div>
+
+<script src="bordsplacering.js" defer></script>
+
+</body>
+</html>
